@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom';
 
 import AdminSidebarLayout from 'src/layouts/AdminSidebarLayout';
 import CoordinatorSidebarLayout from 'src/layouts/CoordinatorSidebarLayout';
+import BeneficiarySidebarLayout from 'src/layouts/BeneficiarySidebarLayout'; // ✅ New layout for beneficiaries
 
 import BaseLayout from 'src/layouts/BaseLayout';
 
@@ -15,20 +16,20 @@ const Loader = (Component) => (props) => (
   </Suspense>
 );
 
-// Auth Components
+// 🔑 Auth Components
 const AdminLogin = Loader(lazy(() => import('src/auth/authAdmin/Login')));
 const CoordinatorLogin = Loader(lazy(() => import('src/auth/authCoordinator/Login')));
+const BeneficiaryLogin = Loader(lazy(() => import('src/auth/authBeneficiary/Login'))); // ✅
 
-const Register = Loader(lazy(() => import('src/auth/authCoordinator/Register')));
+const CoordinatorRegister = Loader(lazy(() => import('src/auth/authCoordinator/Register')));
+const BeneficiaryRegister = Loader(lazy(() => import('src/auth/authBeneficiary/Register'))); // ✅
 
-// Dashboard Components
+// 📊 Dashboard Components
 const Admin = Loader(lazy(() => import('src/content/dashboards/Admin')));
 const Coordinator = Loader(lazy(() => import('src/coordinator_contents/dashboards/Coordinator')));
+const BeneficiaryDashboard = Loader(lazy(() => import('src/beneficiary_contents/dashboards/Beneficiary'))); // ✅
 
-// Beneficiary Components
-
-
-// Admin/Coordinator Shared Components
+// 📩 Shared Modules
 const Messenger = Loader(lazy(() => import('src/content/applications/Messenger')));
 const Transactions = Loader(lazy(() => import('src/content/applications/Transactions')));
 const Sector = Loader(lazy(() => import('src/content/applications/Sector')));
@@ -36,7 +37,7 @@ const CoordinatorSettings = Loader(lazy(() => import('src/content/applications/C
 const UserProfile = Loader(lazy(() => import('src/content/applications/Users/profile')));
 const UserSettings = Loader(lazy(() => import('src/content/applications/Users/settings')));
 
-// UI Components
+// 🎨 UI Components
 const Buttons = Loader(lazy(() => import('src/content/pages/Components/Buttons')));
 const Modals = Loader(lazy(() => import('src/content/pages/Components/Modals')));
 const Accordions = Loader(lazy(() => import('src/content/pages/Components/Accordions')));
@@ -47,7 +48,8 @@ const Avatars = Loader(lazy(() => import('src/content/pages/Components/Avatars')
 const Cards = Loader(lazy(() => import('src/content/pages/Components/Cards')));
 const Forms = Loader(lazy(() => import('src/content/pages/Components/Forms')));
 
-// Status Pages
+// ⚠️ Status Pages & HomePage
+const HomePage = Loader(lazy(() => import('src/pages/Status/HomePage')));
 const Status404 = Loader(lazy(() => import('src/pages/Status/Status404')));
 const Status500 = Loader(lazy(() => import('src/pages/Status/Status500')));
 const StatusComingSoon = Loader(lazy(() => import('src/pages/Status/ComingSoon')));
@@ -58,10 +60,12 @@ const routes = [
     path: '',
     element: <BaseLayout />,
     children: [
-      { path: '', element: <Navigate to="login" replace /> },
-      { path: 'login', element: <AdminLogin /> },
+      { path: '', element: <HomePage /> }, 
+      { path: 'admin-login', element: <AdminLogin /> },
       { path: 'coordinator-login', element: <CoordinatorLogin /> },
-      { path: 'register', element: <Register /> },
+      { path: 'beneficiary-login', element: <BeneficiaryLogin /> }, // ✅
+      { path: 'register', element: <CoordinatorRegister /> },
+      { path: 'beneficiary-register', element: <BeneficiaryRegister /> }, // ✅
       {
         path: 'status',
         children: [
@@ -72,7 +76,7 @@ const routes = [
           { path: 'coming-soon', element: <StatusComingSoon /> }
         ]
       },
-      { path: '*', element: <Status404 /> } 
+      { path: '*', element: <Status404 /> }
     ]
   },
 
@@ -137,12 +141,35 @@ const routes = [
     ]
   },
 
+  // 🟢 Beneficiary Routes ✅
+  {
+    path: 'beneficiary',
+    element: (
+      <ProtectedRoute allowedRoles={['beneficiary']}>
+        <BeneficiarySidebarLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      { path: '', element: <Navigate to="dashboard" replace /> },
+      { path: 'dashboard', element: <BeneficiaryDashboard /> },
+      { path: 'transactions', element: <Transactions /> },
+      {
+        path: 'profile',
+        children: [
+          { path: '', element: <Navigate to="details" replace /> },
+          { path: 'details', element: <UserProfile /> },
+          { path: 'settings', element: <UserSettings /> }
+        ]
+      },
+      { path: '*', element: <Status404 /> }
+    ]
+  },
 
-  // ⚙️ Shared Components (Admin/Coordinator)
+  // ⚙️ Shared Components (Admin/Coordinator/Beneficiary)
   {
     path: 'components',
     element: (
-      <ProtectedRoute allowedRoles={['admin', 'coordinator']}>
+      <ProtectedRoute allowedRoles={['admin', 'coordinator', 'beneficiary']}>
         <AdminSidebarLayout />
       </ProtectedRoute>
     ),
@@ -160,7 +187,7 @@ const routes = [
     ]
   },
 
-  // 🌐 Global Catch-All (Fallback for any invalid route)
+  // 🌐 Global Catch-All
   {
     path: '*',
     element: <Status404 />

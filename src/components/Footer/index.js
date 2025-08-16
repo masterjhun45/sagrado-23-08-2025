@@ -18,7 +18,7 @@ function Footer() {
       >
         <Box>
           <Typography variant="subtitle1">
-            &copy; 2025 - Developed by OTOG, Opol Community College
+            &copy; 2025 - Developed by OTOG, Opol Community College this is Beneficiary
           </Typography>
         </Box>
         <Typography

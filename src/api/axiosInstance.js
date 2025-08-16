@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8000', // Local backend server
+  baseURL: 'http://127.0.0.1:8000', // Local backend server
   headers: {
     Accept: 'application/json',
   }
