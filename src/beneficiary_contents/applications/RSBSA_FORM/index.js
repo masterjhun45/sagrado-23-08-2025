@@ -16,7 +16,7 @@ import {
   Fade,
   Paper,
   Chip,
-  IconButton,
+
   Tooltip
 } from '@mui/material';
 import {
@@ -101,7 +101,7 @@ const RSBSAForm = () => {
   const {
     formData,
     errors,
-    isLoading,
+
     isSubmitting,
     currentStep,
     totalSteps,
@@ -109,14 +109,14 @@ const RSBSAForm = () => {
     addFarmParcel,
     updateFarmParcel,
     removeFarmParcel,
-    validateForm,
+
     nextStep,
     prevStep,
     goToStep,
     submitForm,
     resetForm,
     formProgress,
-    isValid,
+
     canSubmit
   } = useRSBSAForm();
 
