@@ -135,7 +135,7 @@ export const useRSBSAForm = () => {
   const [errors, setErrors] = useState({});
   
   // Loading states
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading,] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form step management
