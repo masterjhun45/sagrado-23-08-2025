@@ -1,22 +1,34 @@
 import { Box, styled, Tooltip } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-// Use localStorage or context to get current role
+// Handle dashboard path based on role
 function getDashboardPath() {
-  const user = JSON.parse(localStorage.getItem('user')); // or however you store it
-  const role = user?.role; // Assuming role is stored like: { id, name, role: "admin" }
-
-  if (role === 'coordinator') return '/coordinator/overview';
-  return '/admin/overview';
+  const user = JSON.parse(localStorage.getItem('user'));
+  
+  const role = user?.role?.toLowerCase(); // normalize casing
+  
+  switch (role) {
+    case 'admin':
+      return '/admin/overview';
+    case 'coordinator':
+      return '/coordinator/overview';
+    case 'beneficiary':
+      return '/beneficiary/overview';
+    default:
+      return '/login'; // fallback
+  }
 }
 
 const LogoWrapper = styled(Link)(
   ({ theme }) => `
         color: ${theme.palette.text.primary};
-        padding: ${theme.spacing(0, 1, 0, 0)};
         display: flex;
+        align-items: center;
+        justify-content: center;
         text-decoration: none;
         font-weight: ${theme.typography.fontWeightBold};
+        width: 100%;
+        margin: 0 auto;
 `
 );
 
@@ -25,6 +37,7 @@ const LogoSignWrapper = styled(Box)(`
         height: 38px;
         margin-top: 4px;
         transform: scale(.8);
+        flex-shrink: 0;
 `);
 
 const LogoSign = styled(Box)(
@@ -38,7 +51,7 @@ const LogoSign = styled(Box)(
         top: 3px;
         left: 17px;
 
-        &:after, 
+        &:after,
         &:before {
             content: "";
             display: block;
@@ -80,6 +93,10 @@ const LogoSignInner = styled(Box)(
 const LogoTextWrapper = styled(Box)(
   ({ theme }) => `
         padding-left: ${theme.spacing(1)};
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
 `
 );
 
@@ -93,6 +110,7 @@ const VersionBadge = styled(Box)(
         display: inline-block;
         line-height: 1;
         font-size: ${theme.typography.pxToRem(11)};
+        margin-bottom: ${theme.spacing(0.5)};
 `
 );
 
@@ -100,12 +118,13 @@ const LogoText = styled(Box)(
   ({ theme }) => `
         font-size: ${theme.typography.pxToRem(15)};
         font-weight: ${theme.typography.fontWeightBold};
+        text-align: center;
 `
 );
 
 function Logo() {
   const dashboardPath = getDashboardPath();
-
+  
   return (
     <LogoWrapper to={dashboardPath}>
       <LogoSignWrapper>

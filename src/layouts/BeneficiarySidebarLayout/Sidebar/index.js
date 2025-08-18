@@ -26,16 +26,64 @@ const SidebarWrapper = styled(Box)(
         z-index: 7;
         height: 100%;
         padding-bottom: 68px;
+        overflow-x: hidden; /* Prevent horizontal overflow */
+        
+        /* Ensure consistent spacing for menu items */
+        .MuiList-root {
+          width: 100%;
+        }
+        
+        .MuiButton-root {
+          /* Ensure buttons don't exceed sidebar width */
+          max-width: calc(100% - ${theme.spacing(2.4)});
+        }
 `
 );
+
+const SidebarContent = styled(Box)`
+  padding: 0;
+  width: 100%;
+  
+  /* Ensure menu wrapper takes full width */
+  & > div {
+    width: 100%;
+  }
+`;
 
 function Sidebar() {
   const { sidebarToggle, toggleSidebar } = useContext(SidebarContext);
   const closeSidebar = () => toggleSidebar();
   const theme = useTheme();
 
+  const sidebarContent = (
+    <SidebarContent>
+      <Box mt={3}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+            px: 2
+          }}
+        >
+          <Logo />
+        </Box>
+      </Box>
+      <Divider
+        sx={{
+          mt: theme.spacing(3),
+          mx: theme.spacing(2),
+          background: theme.colors.alpha.trueWhite[10]
+        }}
+      />
+      <SidebarMenu />
+    </SidebarContent>
+  );
+
   return (
     <>
+      {/* Desktop Sidebar */}
       <SidebarWrapper
         sx={{
           display: {
@@ -54,24 +102,7 @@ function Sidebar() {
         }}
       >
         <Scrollbar>
-          <Box mt={3}>
-            <Box
-              mx={2}
-              sx={{
-                width: 52
-              }}
-            >
-              <Logo />
-            </Box>
-          </Box>
-          <Divider
-            sx={{
-              mt: theme.spacing(3),
-              mx: theme.spacing(2),
-              background: theme.colors.alpha.trueWhite[10]
-            }}
-          />
-          <SidebarMenu />
+          {sidebarContent}
         </Scrollbar>
         <Divider
           sx={{
@@ -92,9 +123,15 @@ function Sidebar() {
           </Button>
         </Box>
       </SidebarWrapper>
+
+      {/* Mobile Drawer */}
       <Drawer
         sx={{
-          boxShadow: `${theme.sidebar.boxShadow}`
+          boxShadow: `${theme.sidebar.boxShadow}`,
+          '& .MuiDrawer-paper': {
+            width: theme.sidebar.width,
+            overflow: 'hidden' /* Prevent drawer overflow */
+          }
         }}
         anchor={theme.direction === 'rtl' ? 'right' : 'left'}
         open={sidebarToggle}
@@ -107,28 +144,13 @@ function Sidebar() {
             background:
               theme.palette.mode === 'dark'
                 ? theme.colors.alpha.white[100]
-                : darken(theme.colors.alpha.black[100], 0.5)
+                : darken(theme.colors.alpha.black[100], 0.5),
+            height: '100%',
+            overflow: 'hidden'
           }}
         >
           <Scrollbar>
-            <Box mt={3}>
-              <Box
-                mx={2}
-                sx={{
-                  width: 52
-                }}
-              >
-                <Logo />
-              </Box>
-            </Box>
-            <Divider
-              sx={{
-                mt: theme.spacing(3),
-                mx: theme.spacing(2),
-                background: theme.colors.alpha.trueWhite[10]
-              }}
-            />
-            <SidebarMenu />
+            {sidebarContent}
           </Scrollbar>
         </SidebarWrapper>
       </Drawer>

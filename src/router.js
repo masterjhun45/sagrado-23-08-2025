@@ -37,6 +37,11 @@ const CoordinatorSettings = Loader(lazy(() => import('src/content/applications/C
 const UserProfile = Loader(lazy(() => import('src/content/applications/Users/profile')));
 const UserSettings = Loader(lazy(() => import('src/content/applications/Users/settings')));
 
+// 🌾 RSBSA Modules - Registry System for Basic Sectors in Agriculture
+const RSBSAForm = Loader(lazy(() => import('src/beneficiary_contents/applications/RSBSA_FORM'))); // Main RSBSA form component
+const RSBSAStatus = Loader(lazy(() => import('src/content/applications/RSBSA/Status'))); // RSBSA application status tracker
+const RSBSAList = Loader(lazy(() => import('src/content/applications/RSBSA/List'))); // List of RSBSA applications (optional)
+
 // 🎨 UI Components
 const Buttons = Loader(lazy(() => import('src/content/pages/Components/Buttons')));
 const Modals = Loader(lazy(() => import('src/content/pages/Components/Modals')));
@@ -153,15 +158,40 @@ const routes = [
       { path: '', element: <Navigate to="dashboard" replace /> },
       { path: 'dashboard', element: <BeneficiaryDashboard /> },
       { path: 'transactions', element: <Transactions /> },
-      {
+      { 
         path: 'profile',
         children: [
           { path: '', element: <Navigate to="details" replace /> },
           { path: 'details', element: <UserProfile /> },
           { path: 'settings', element: <UserSettings /> }
+        ] 
+      },
+      
+      // 🌾 RSBSA Routes Section - Registry System for Basic Sectors in Agriculture
+      // This matches your sidebar navigation structure from the menu you showed me
+      { 
+        path: 'RSBSA_FORM', // 📝 Main RSBSA application form
+        element: <RSBSAForm /> // This route matches "/beneficiary/RSBSA_FORM" from your sidebar
+      },
+      {
+        path: 'rsbsa', // 📊 RSBSA management section with nested routes
+        children: [
+          { 
+            path: '', // Default redirect to status when accessing /beneficiary/rsbsa/
+            element: <Navigate to="status" replace /> 
+          },
+          { 
+            path: 'status', // 🔍 RSBSA application status tracker
+            element: <RSBSAStatus /> // This route matches "/beneficiary/rsbsa/status" from your sidebar
+          },
+          { 
+            path: 'list', // 📋 Optional: List all RSBSA applications for the beneficiary
+            element: <RSBSAList />
+          }
         ]
       },
-      { path: '*', element: <Status404 /> }
+
+      { path: '*', element: <Status404 /> } // Catch-all for unmatched beneficiary routes
     ]
   },
 

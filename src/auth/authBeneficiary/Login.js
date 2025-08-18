@@ -227,7 +227,7 @@ export default function LoginBeneficiary() {
                 <div className="login-link">
                   <p className="login-text">
                     Don't have an account?{' '}
-                    <a href="/beneficiary/register" className="login-link-text">
+                    <a href="/beneficiary-register" className="login-link-text">
                       Create one here
                     </a>
                   </p>
