@@ -4,7 +4,6 @@ import { Grid, Container } from '@mui/material';
 
 // Import existing components
 import ProfileCover from './ProfileCover';
-import RecentActivity from './RecentActivity';
 import Addresses from './Addresses';
 
 // Import beneficiary-specific components
@@ -12,6 +11,7 @@ import PersonalDetails from './PersonalDetails';
 import RSBSAStatus from './RSBSAStatus';
 import ApplicationHistory from './ApplicationHistory';
 import QuickActions from './QuickActions';
+import BeneficiarySummary from './BeneficiarySummary';
 
 function ManagementUserProfile() {
   const storedUser = JSON.parse(localStorage.getItem('user')) || {};
@@ -51,7 +51,7 @@ function ManagementUserProfile() {
             <ProfileCover user={user} />
           </Grid>
           <Grid item xs={12} md={4}>
-            <RecentActivity />
+            <BeneficiarySummary />
           </Grid>
           
           {/* Personal Details Section - Primary Focus */}
