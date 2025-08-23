@@ -5,13 +5,13 @@ import { Grid, Container } from '@mui/material';
 // Import existing components
 import ProfileCover from './ProfileCover';
 import RecentActivity from './RecentActivity';
-import Feed from './Feed';
-import PopularTags from './PopularTags';
-import MyCards from './MyCards';
 import Addresses from './Addresses';
 
-// Import new PersonalDetails component
+// Import beneficiary-specific components
 import PersonalDetails from './PersonalDetails';
+import RSBSAStatus from './RSBSAStatus';
+import ApplicationHistory from './ApplicationHistory';
+import QuickActions from './QuickActions';
 
 function ManagementUserProfile() {
   const storedUser = JSON.parse(localStorage.getItem('user')) || {};
@@ -59,17 +59,17 @@ function ManagementUserProfile() {
             <PersonalDetails />
           </Grid>
           
-          {/* Secondary Profile Sections */}
+          {/* RSBSA Status and Quick Actions */}
           <Grid item xs={12} md={8}>
-            <Feed />
+            <RSBSAStatus />
           </Grid>
           <Grid item xs={12} md={4}>
-            <PopularTags />
+            <QuickActions />
           </Grid>
           
-          {/* Additional Profile Information */}
+          {/* Application History and Address Information */}
           <Grid item xs={12} md={7}>
-            <MyCards />
+            <ApplicationHistory />
           </Grid>
           <Grid item xs={12} md={5}>
             <Addresses />
