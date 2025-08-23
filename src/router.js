@@ -39,8 +39,7 @@ const UserSettings = Loader(lazy(() => import('src/content/applications/Users/se
 
 // 🌾 RSBSA Modules - Registry System for Basic Sectors in Agriculture
 const RSBSAForm = Loader(lazy(() => import('src/beneficiary_contents/applications/RSBSA_FORM'))); // Main RSBSA form component
-const RSBSAStatus = Loader(lazy(() => import('src/content/applications/RSBSA/Status'))); // RSBSA application status tracker
-const RSBSAList = Loader(lazy(() => import('src/content/applications/RSBSA/List'))); // List of RSBSA applications (optional)
+
 
 // 🎨 UI Components
 const Buttons = Loader(lazy(() => import('src/content/pages/Components/Buttons')));
@@ -180,14 +179,7 @@ const routes = [
             path: '', // Default redirect to status when accessing /beneficiary/rsbsa/
             element: <Navigate to="status" replace /> 
           },
-          { 
-            path: 'status', // 🔍 RSBSA application status tracker
-            element: <RSBSAStatus /> // This route matches "/beneficiary/rsbsa/status" from your sidebar
-          },
-          { 
-            path: 'list', // 📋 Optional: List all RSBSA applications for the beneficiary
-            element: <RSBSAList />
-          }
+        
         ]
       },
 

@@ -135,7 +135,8 @@ export const useRSBSAForm = () => {
   const [errors, setErrors] = useState({});
   
   // Loading states
-  const [isLoading,] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form step management
