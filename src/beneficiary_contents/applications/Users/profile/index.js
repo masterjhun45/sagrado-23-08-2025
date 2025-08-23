@@ -32,7 +32,11 @@ function ManagementUserProfile() {
   return (
     <>
       <Helmet>
-        <title>User Details - Management</title>
+        <title>User Profile - Beneficiary Details Management</title>
+        <meta 
+          name="description" 
+          content="Manage your personal details and beneficiary profile information" 
+        />
       </Helmet>
       <Container sx={{ mt: 3 }} maxWidth="lg">
         <Grid
@@ -42,6 +46,7 @@ function ManagementUserProfile() {
           alignItems="stretch"
           spacing={3}
         >
+          {/* Profile Cover Section */}
           <Grid item xs={12} md={8}>
             <ProfileCover user={user} />
           </Grid>
@@ -49,17 +54,20 @@ function ManagementUserProfile() {
             <RecentActivity />
           </Grid>
           
-          {/* Personal Details Section - Full Width */}
+          {/* Personal Details Section - Primary Focus */}
           <Grid item xs={12}>
             <PersonalDetails />
           </Grid>
           
+          {/* Secondary Profile Sections */}
           <Grid item xs={12} md={8}>
             <Feed />
           </Grid>
           <Grid item xs={12} md={4}>
             <PopularTags />
           </Grid>
+          
+          {/* Additional Profile Information */}
           <Grid item xs={12} md={7}>
             <MyCards />
           </Grid>
