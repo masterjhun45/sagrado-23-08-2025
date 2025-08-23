@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
+import axiosInstance from 'src/api/axiosInstance';
 
 const usePersonalDetails = (userId = null) => {
   // Initialize form data with default values matching the Laravel migration schema
@@ -61,6 +62,7 @@ const usePersonalDetails = (userId = null) => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [isExistingRecord, setIsExistingRecord] = useState(false);
 
   // Barangay options for Opol, Misamis Oriental
   const barangayOptions = [
@@ -185,21 +187,40 @@ const usePersonalDetails = (userId = null) => {
     return Object.keys(newErrors).length === 0;
   }, [formData]);
 
-  // Load data function (placeholder for API call)
+  // Load data function with Laravel API integration
   const loadPersonalDetails = useCallback(async (id) => {
+    if (!id) return;
+    
     setLoading(true);
     try {
-      // TODO: Replace with actual API call
-      // const response = await api.get(`/beneficiary-details/${id}`);
-      // setFormData(response.data);
+      // Use axios to get beneficiary details from Laravel backend
+      const response = await axiosInstance.get(`/api/beneficiary-details/${id}`);
       
-      // For now, load from localStorage if available
-      const savedData = localStorage.getItem(`personal_details_${id}`);
-      if (savedData) {
-        setFormData(JSON.parse(savedData));
+      if (response.data.success) {
+        const backendData = response.data.data;
+        // Transform data from backend format
+        const transformedData = {
+          ...backendData,
+          sex: backendData.sex ? backendData.sex.charAt(0).toUpperCase() + backendData.sex.slice(1) : '',
+        };
+        setFormData(transformedData);
+        setIsExistingRecord(true);
       }
     } catch (error) {
       console.error('Error loading personal details:', error);
+      // If record doesn't exist (404), it's not an error - user just hasn't created profile yet
+      if (error.response?.status === 404) {
+        setIsExistingRecord(false);
+        // Load from localStorage as fallback
+        const savedData = localStorage.getItem(`personal_details_${id}`);
+        if (savedData) {
+          const parsedData = JSON.parse(savedData);
+          setFormData(parsedData);
+          setIsExistingRecord(true);
+        }
+      } else {
+        setErrors({ general: 'Failed to load profile data' });
+      }
     } finally {
       setLoading(false);
     }
@@ -223,19 +244,28 @@ const usePersonalDetails = (userId = null) => {
         profile_completion_status: 'completed'
       };
 
-      // TODO: Replace with actual Laravel API call
-      // const response = await fetch('/api/beneficiary-details', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     'Authorization': `Bearer ${token}`
-      //   },
-      //   body: JSON.stringify(backendData)
-      // });
+      // UPSERT: Use Laravel API with axios - handles create/update automatically
+      const payload = {
+        user_id: userId,
+        ...backendData
+      };
+
+      const response = await axiosInstance.post('/api/beneficiary-details', payload);
       
-      // For now, save to localStorage with proper structure
-      if (userId) {
-        localStorage.setItem(`personal_details_${userId}`, JSON.stringify(backendData));
+      if (response.data.success) {
+        const savedData = response.data.data;
+        // Transform data back from backend
+        const transformedData = {
+          ...savedData,
+          sex: savedData.sex ? savedData.sex.charAt(0).toUpperCase() + savedData.sex.slice(1) : '',
+        };
+        setFormData(transformedData);
+        setIsExistingRecord(true);
+        
+        // Also save to localStorage as backup
+        if (userId) {
+          localStorage.setItem(`personal_details_${userId}`, JSON.stringify(transformedData));
+        }
       }
 
       // Update completion tracking
@@ -309,6 +339,7 @@ const usePersonalDetails = (userId = null) => {
       completion_tracking: {}
     });
     setErrors({});
+    setIsExistingRecord(false);
   }, []);
 
   // Load data on mount if userId is provided
@@ -323,6 +354,7 @@ const usePersonalDetails = (userId = null) => {
     errors,
     loading,
     saving,
+    isExistingRecord,
     barangayOptions,
     civilStatusOptions,
     educationOptions,
@@ -332,7 +364,10 @@ const usePersonalDetails = (userId = null) => {
     loadPersonalDetails,
     savePersonalDetails,
     getCompletionPercentage,
-    resetForm
+    resetForm,
+    // Additional helper flags
+    isCreate: !isExistingRecord,
+    isUpdate: isExistingRecord
   };
 };
 
