@@ -16,17 +16,24 @@ import BeneficiarySummary from './BeneficiarySummary';
 function ManagementUserProfile() {
   const storedUser = JSON.parse(localStorage.getItem('user')) || {};
   
+  // Get verification status from localStorage or default to not verified
+  const profileData = JSON.parse(localStorage.getItem(`personal_details_${storedUser.id}`)) || {};
+  const isVerified = profileData.is_profile_verified || false;
+  const rsbsaNumber = profileData.system_generated_rsbsa_number || profileData.manual_rsbsa_number;
+  
   const user = {
     savedCards: storedUser.savedCards || 0,
     name: storedUser.name || storedUser.username || storedUser.email || 'Unknown User',
     coverImg: '/static/images/placeholders/covers/5.jpg',
     avatar: '/static/images/avatars/4.jpg',
-    description:
-      storedUser.description ||
-      'No description provided. You can update your profile to add more info.',
-    jobtitle: storedUser.jobtitle || 'N/A',
-    location: storedUser.location || 'N/A',
-    followers: storedUser.followers || '0'
+    description: isVerified 
+      ? `Verified RSBSA beneficiary${rsbsaNumber ? ` - ${rsbsaNumber}` : ''}. Access agricultural programs and services through your dashboard.`
+      : 'RSBSA registration not yet verified. Complete your profile and submit required documents to access agricultural programs.',
+    jobtitle: isVerified ? 'Verified RSBSA Beneficiary' : 'Pending RSBSA Verification',
+    location: profileData.municipality && profileData.province 
+      ? `${profileData.municipality}, ${profileData.province}` 
+      : storedUser.location || 'Opol, Misamis Oriental',
+    followers: isVerified ? 'Verified' : 'Unverified'
   };
 
   return (

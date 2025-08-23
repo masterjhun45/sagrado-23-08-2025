@@ -15,6 +15,8 @@ import ArrowBackTwoToneIcon from '@mui/icons-material/ArrowBackTwoTone';
 import ArrowForwardTwoToneIcon from '@mui/icons-material/ArrowForwardTwoTone';
 import UploadTwoToneIcon from '@mui/icons-material/UploadTwoTone';
 import MoreHorizTwoToneIcon from '@mui/icons-material/MoreHorizTwoTone';
+import AgricultureIcon from '@mui/icons-material/Agriculture';
+import VerifiedIcon from '@mui/icons-material/Verified';
 
 const Input = styled('input')({
   display: 'none'
@@ -87,13 +89,21 @@ const ProfileCover = ({ user }) => {
             <ArrowBackTwoToneIcon />
           </IconButton>
         </Tooltip>
-        <Box>
-          <Typography variant="h3" component="h3" gutterBottom>
-            Profile for {user.name}
-          </Typography>
-          <Typography variant="subtitle2">
-            This is a profile page. Easy to modify, always blazing fast
-          </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Avatar sx={{ bgcolor: 'primary.main', width: 56, height: 56 }}>
+            <AgricultureIcon sx={{ fontSize: 32 }} />
+          </Avatar>
+          <Box>
+            <Typography variant="h3" component="h3" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              RSBSA Beneficiary Profile
+              {user.followers === 'Verified' && (
+                <VerifiedIcon color="success" sx={{ fontSize: 28 }} />
+              )}
+            </Typography>
+            <Typography variant="subtitle2">
+              Registry System for Basic Sectors in Agriculture
+            </Typography>
+          </Box>
         </Box>
       </Box>
       <CardCover>
@@ -133,7 +143,7 @@ const ProfileCover = ({ user }) => {
         </Typography>
         <Typography variant="subtitle2">{user.description}</Typography>
         <Typography sx={{ py: 2 }} variant="subtitle2" color="text.primary">
-          {user.jobtitle} | {user.location} | {user.followers} followers
+          {user.jobtitle} | {user.location} | Status: {user.followers}
         </Typography>
         <Box
           display={{ xs: 'block', md: 'flex' }}
