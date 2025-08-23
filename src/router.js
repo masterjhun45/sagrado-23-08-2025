@@ -34,8 +34,14 @@ const Messenger = Loader(lazy(() => import('src/content/applications/Messenger')
 const Transactions = Loader(lazy(() => import('src/content/applications/Transactions')));
 const Sector = Loader(lazy(() => import('src/content/applications/Sector')));
 const CoordinatorSettings = Loader(lazy(() => import('src/content/applications/Coordinator')));
-const UserProfile = Loader(lazy(() => import('src/content/applications/Users/profile')));
-const UserSettings = Loader(lazy(() => import('src/content/applications/Users/settings')));
+
+// 👤 Admin/Coordinator Profile Components
+const AdminUserProfile = Loader(lazy(() => import('src/content/applications/Users/profile')));
+const AdminUserSettings = Loader(lazy(() => import('src/content/applications/Users/settings')));
+
+// 🌾 Beneficiary Profile Components
+const BeneficiaryUserProfile = Loader(lazy(() => import('src/beneficiary_contents/applications/Users/profile')));
+const BeneficiaryUserSettings = Loader(lazy(() => import('src/beneficiary_contents/applications/Users/settings')));
 
 // 🌾 RSBSA Modules - Registry System for Basic Sectors in Agriculture
 const RSBSAForm = Loader(lazy(() => import('src/beneficiary_contents/applications/RSBSA_FORM'))); // Main RSBSA form component
@@ -114,8 +120,8 @@ const routes = [
         path: 'profile',
         children: [
           { path: '', element: <Navigate to="details" replace /> },
-          { path: 'details', element: <UserProfile /> },
-          { path: 'settings', element: <UserSettings /> }
+          { path: 'details', element: <AdminUserProfile /> },
+          { path: 'settings', element: <AdminUserSettings /> }
         ]
       }
     ]
@@ -137,8 +143,8 @@ const routes = [
         path: 'profile',
         children: [
           { path: '', element: <Navigate to="details" replace /> },
-          { path: 'details', element: <UserProfile /> },
-          { path: 'settings', element: <UserSettings /> }
+          { path: 'details', element: <AdminUserProfile /> },
+          { path: 'settings', element: <AdminUserSettings /> }
         ]
       },
       { path: '*', element: <Status404 /> }
@@ -161,8 +167,8 @@ const routes = [
         path: 'profile',
         children: [
           { path: '', element: <Navigate to="details" replace /> },
-          { path: 'details', element: <UserProfile /> },
-          { path: 'settings', element: <UserSettings /> }
+          { path: 'details', element: <BeneficiaryUserProfile /> },
+          { path: 'settings', element: <BeneficiaryUserSettings /> }
         ] 
       },
       
