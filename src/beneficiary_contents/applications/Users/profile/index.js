@@ -1,8 +1,8 @@
 import { Helmet } from 'react-helmet-async';
 import Footer from 'src/components/Footer';
-
 import { Grid, Container } from '@mui/material';
 
+// Import existing components
 import ProfileCover from './ProfileCover';
 import RecentActivity from './RecentActivity';
 import Feed from './Feed';
@@ -10,9 +10,12 @@ import PopularTags from './PopularTags';
 import MyCards from './MyCards';
 import Addresses from './Addresses';
 
+// Import new PersonalDetails component
+import PersonalDetails from './PersonalDetails';
+
 function ManagementUserProfile() {
   const storedUser = JSON.parse(localStorage.getItem('user')) || {};
-
+  
   const user = {
     savedCards: storedUser.savedCards || 0,
     name: storedUser.name || storedUser.username || storedUser.email || 'Unknown User',
@@ -45,6 +48,12 @@ function ManagementUserProfile() {
           <Grid item xs={12} md={4}>
             <RecentActivity />
           </Grid>
+          
+          {/* Personal Details Section - Full Width */}
+          <Grid item xs={12}>
+            <PersonalDetails />
+          </Grid>
+          
           <Grid item xs={12} md={8}>
             <Feed />
           </Grid>
