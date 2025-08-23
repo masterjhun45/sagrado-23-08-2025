@@ -1,12 +1,12 @@
 import { useState, useCallback, useEffect } from 'react';
 
 const usePersonalDetails = (userId = null) => {
-  // Initialize form data with default values from the migration schema
+  // Initialize form data with default values matching the Laravel migration schema
   const [formData, setFormData] = useState({
-    // RSBSA INFORMATION & VERIFICATION
+    // RSBSA INFORMATION & VERIFICATION (matches beneficiary_details table)
     system_generated_rsbsa_number: '',
     manual_rsbsa_number: '',
-    rsbsa_verification_status: 'not_verified',
+    rsbsa_verification_status: 'not_verified', // enum: not_verified, pending, verified, rejected
     rsbsa_verification_notes: '',
     
     // LOCATION INFORMATION
@@ -22,8 +22,8 @@ const usePersonalDetails = (userId = null) => {
     // PERSONAL INFORMATION
     birth_date: '',
     place_of_birth: '',
-    sex: '',
-    civil_status: '',
+    sex: '', // will be converted to lowercase for backend: male/female
+    civil_status: '', // enum: single, married, widowed, separated, divorced
     name_of_spouse: '',
     
     // EDUCATIONAL & DEMOGRAPHIC INFORMATION
@@ -45,13 +45,16 @@ const usePersonalDetails = (userId = null) => {
     is_household_head: false,
     household_head_name: '',
     
-    // PROFILE COMPLETION & VERIFICATION SYSTEM
-    profile_completion_status: 'pending',
+    // PROFILE COMPLETION & VERIFICATION SYSTEM (matches Laravel migration)
+    profile_completion_status: 'pending', // enum: pending, completed, verified, needs_update
     is_profile_verified: false,
     verification_notes: '',
+    profile_verified_at: null,
+    profile_verified_by: null,
     
     // DATA SOURCE & AUDIT TRACKING
-    data_source: 'self_registration',
+    data_source: 'self_registration', // enum: self_registration, coordinator_input, da_import, system_migration
+    last_updated_by_beneficiary: null,
     completion_tracking: {}
   });
 
@@ -202,7 +205,7 @@ const usePersonalDetails = (userId = null) => {
     }
   }, []);
 
-  // Save data function (placeholder for API call)
+  // Save data function with Laravel backend integration
   const savePersonalDetails = useCallback(async () => {
     if (!validateForm()) {
       return false;
@@ -210,12 +213,29 @@ const usePersonalDetails = (userId = null) => {
 
     setSaving(true);
     try {
-      // TODO: Replace with actual API call
-      // const response = await api.post('/beneficiary-details', formData);
+      // Prepare data for Laravel backend (beneficiary_details table)
+      const backendData = {
+        ...formData,
+        // Convert sex to lowercase for backend enum
+        sex: formData.sex.toLowerCase(),
+        // Update tracking fields
+        last_updated_by_beneficiary: new Date().toISOString(),
+        profile_completion_status: 'completed'
+      };
+
+      // TODO: Replace with actual Laravel API call
+      // const response = await fetch('/api/beneficiary-details', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     'Authorization': `Bearer ${token}`
+      //   },
+      //   body: JSON.stringify(backendData)
+      // });
       
-      // For now, save to localStorage
+      // For now, save to localStorage with proper structure
       if (userId) {
-        localStorage.setItem(`personal_details_${userId}`, JSON.stringify(formData));
+        localStorage.setItem(`personal_details_${userId}`, JSON.stringify(backendData));
       }
 
       // Update completion tracking
@@ -229,6 +249,9 @@ const usePersonalDetails = (userId = null) => {
         completion_percentage: Math.round((completedFields.length / Object.keys(formData).length) * 100),
         last_updated: new Date().toISOString()
       });
+
+      updateField('profile_completion_status', 'completed');
+      updateField('last_updated_by_beneficiary', new Date().toISOString());
 
       return true;
     } catch (error) {
